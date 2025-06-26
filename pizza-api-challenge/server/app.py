@@ -5,10 +5,10 @@ from .controllers import restaurant_controller, pizza_controller, restaurant_piz
 
 def create_app():
     app = Flask(__name__)
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:'
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///instance/app.db'
     app.config['SQLAlchemy_TRACK_MODIFICATIONS'] = False
 
-    init_db(app)
+    db.init_app(app)
 
     app.register_blueprint(restaurant_controller.bp)
     app.register_blueprint(pizza_controller.bp)
