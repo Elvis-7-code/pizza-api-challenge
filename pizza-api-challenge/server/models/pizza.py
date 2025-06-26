@@ -1,10 +1,16 @@
-from server.config import db
+from . import db, SerializerMixin
+from sqlalchemy.ext.associationproxy import association_proxy
 
-class Pizza(db.Model):
-    __tablename__ = 'pizzas'
-    id = db.column(db.Integer, primary_key=True)
-    name = db.column(db.String, nullable = False)
-    ingredients = db.column(db.string, nullable = False)
+class Pizza(db.Model, SerializerMixin):
+    __tablename__= 'pizzas'
 
-    restaurant_pizzas = db.relationship('RestaurantPizza', back_populates = 'Pizza')
-    
+    serialize_rules = ('-pizza_restaurants.pizza',)
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String, nullable=False)
+    ingredients = db.Column(db.String, nullable=False)
+    pizza_restaurants = db.relationship('RestaurantPizza', back_populates='pizza')
+    restaurants = association_proxy('pizza_restaurants', 'restaurant', creator=lambda restaurant: RestaurantPizza(restaurant=restaurant))
+
+    def __repr__(self):
+        return f"<Pizza id={self.id}  name={self.name} ingredients={self.ingredients}>"
